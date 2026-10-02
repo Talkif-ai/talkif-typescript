@@ -1,6 +1,6 @@
 {
     "name": "@talkif/sdk",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "private": false,
     "repository": {
         "type": "git",
@@ -143,6 +143,17 @@
             },
             "default": "./dist/cjs/api/resources/aiModels/exports.js"
         },
+        "./accounts": {
+            "import": {
+                "types": "./dist/esm/api/resources/accounts/exports.d.mts",
+                "default": "./dist/esm/api/resources/accounts/exports.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/api/resources/accounts/exports.d.ts",
+                "default": "./dist/cjs/api/resources/accounts/exports.js"
+            },
+            "default": "./dist/cjs/api/resources/accounts/exports.js"
+        },
         "./phoneNumbers": {
             "import": {
                 "types": "./dist/esm/api/resources/phoneNumbers/exports.d.mts",
@@ -186,6 +197,17 @@
                 "default": "./dist/cjs/api/resources/schedules/exports.js"
             },
             "default": "./dist/cjs/api/resources/schedules/exports.js"
+        },
+        "./transfers": {
+            "import": {
+                "types": "./dist/esm/api/resources/transfers/exports.d.mts",
+                "default": "./dist/esm/api/resources/transfers/exports.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/api/resources/transfers/exports.d.ts",
+                "default": "./dist/cjs/api/resources/transfers/exports.js"
+            },
+            "default": "./dist/cjs/api/resources/transfers/exports.js"
         },
         "./package.json": "./package.json"
     },

@@ -4,5 +4,6 @@
 export const TranscriptSpeaker = {
     Ai: "ai",
     Human: "human",
+    Colleague: "colleague",
 } as const;
 export type TranscriptSpeaker = (typeof TranscriptSpeaker)[keyof typeof TranscriptSpeaker];

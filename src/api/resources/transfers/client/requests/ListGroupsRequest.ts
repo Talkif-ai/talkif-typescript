@@ -4,9 +4,9 @@
  * @example
  *     {}
  */
-export interface GetActiveCallsRequest {
-    /** Max items to return (1-100, default 10) */
+export interface ListGroupsRequest {
+    /** Page size */
     limit?: number;
-    /** Items to skip (default 0) */
+    /** Page offset */
     offset?: number;
 }

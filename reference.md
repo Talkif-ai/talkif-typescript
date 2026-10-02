@@ -576,6 +576,69 @@ await client.billing.getPublicPricing();
 </details>
 
 ## Calls
+<details><summary><code>client.calls.<a href="/src/api/resources/calls/client/Client.ts">listCalls</a>({ ...params }) -> Talkif.CallListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the account's calls, newest first, with optional filters. Use `status` to narrow to live calls (for example `in_progress`), `flowId` / `campaignId` / `contactId` to scope by resource, and `startDate` / `endDate` for a time window.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.calls.listCalls();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.ListCallsRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `CallsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.calls.<a href="/src/api/resources/calls/client/Client.ts">makeCall</a>({ ...params }) -> Talkif.MakeCallResponse</code></summary>
 <dl>
 <dd>
@@ -631,156 +694,6 @@ await client.calls.makeCall({
 <dd>
 
 **request:** `Talkif.MakeCallRequest` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**requestOptions:** `CallsClient.RequestOptions` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.calls.<a href="/src/api/resources/calls/client/Client.ts">getActiveCalls</a>({ ...params }) -> core.Page&lt;Talkif.CallResponse, Talkif.CallListResponse&gt;</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-GET /api/v1/calls/active
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```typescript
-const pageableResponse = await client.calls.getActiveCalls();
-for await (const item of pageableResponse) {
-    console.log(item);
-}
-
-// Or you can manually iterate page-by-page
-let page = await client.calls.getActiveCalls();
-while (page.hasNextPage()) {
-    page = page.getNextPage();
-}
-
-// You can also access the underlying response
-const response = page.response;
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**request:** `Talkif.GetActiveCallsRequest` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**requestOptions:** `CallsClient.RequestOptions` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.calls.<a href="/src/api/resources/calls/client/Client.ts">getCallHistory</a>({ ...params }) -> core.Page&lt;Talkif.CallResponse, Talkif.CallListResponse&gt;</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-GET /api/v1/calls/history
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```typescript
-const pageableResponse = await client.calls.getCallHistory();
-for await (const item of pageableResponse) {
-    console.log(item);
-}
-
-// Or you can manually iterate page-by-page
-let page = await client.calls.getCallHistory();
-while (page.hasNextPage()) {
-    page = page.getNextPage();
-}
-
-// You can also access the underlying response
-const response = page.response;
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**request:** `Talkif.GetCallHistoryRequest` 
     
 </dd>
 </dl>
@@ -1032,7 +945,8 @@ DELETE /api/v1/calls/:callId/recording → 204
 Charges for actual storage duration before deletion (billing at lifecycle end).
 Uses idempotency key to prevent double-charging if racing with retention job.
 
-SECURITY: Verifies account access, call ownership.
+Owner or admin only: deleting a recording destroys data the account may
+need to keep. With an API key, the key's creator must be an owner or admin.
 </dd>
 </dl>
 </dd>
@@ -4557,6 +4471,119 @@ await client.aiModels.listTtsVoices();
 </dl>
 </details>
 
+## Accounts
+<details><summary><code>client.accounts.<a href="/src/api/resources/accounts/client/Client.ts">getPermissions</a>() -> Talkif.PermissionsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Your role in the account and the permissions it grants, for showing or
+hiding actions. The server enforces them regardless.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.accounts.getPermissions();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**requestOptions:** `AccountsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.accounts.<a href="/src/api/resources/accounts/client/Client.ts">getRoles</a>() -> Talkif.RolesResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Every built-in role with the permissions it grants in the selected
+account, for showing what each role may do.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.accounts.getRoles();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**requestOptions:** `AccountsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Phone Numbers
 <details><summary><code>client.phoneNumbers.<a href="/src/api/resources/phoneNumbers/client/Client.ts">listPhoneNumbers</a>({ ...params }) -> Talkif.PhoneNumberListResponse</code></summary>
 <dl>
@@ -4621,7 +4648,7 @@ await client.phoneNumbers.listPhoneNumbers();
 </dl>
 </details>
 
-<details><summary><code>client.phoneNumbers.<a href="/src/api/resources/phoneNumbers/client/Client.ts">listAvailableNumbers</a>({ ...params }) -> Talkif.AvailablePhoneNumber[]</code></summary>
+<details><summary><code>client.phoneNumbers.<a href="/src/api/resources/phoneNumbers/client/Client.ts">listAvailableNumbers</a>({ ...params }) -> Talkif.AvailableNumbersResponse</code></summary>
 <dl>
 <dd>
 
@@ -5376,7 +5403,7 @@ await client.phoneProviders.getProvider({
 <dl>
 <dd>
 
-POST /api/v1/public/calls/calls
+POST /api/v1/public/calls
 </dd>
 </dl>
 </dd>
@@ -5403,137 +5430,6 @@ await client.publicCalls.createCall();
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**requestOptions:** `PublicCallsClient.RequestOptions` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.publicCalls.<a href="/src/api/resources/publicCalls/client/Client.ts">getCallStatus</a>({ ...params }) -> Talkif.PublicCallStatusResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-GET /api/v1/public/calls/calls/{callId}
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```typescript
-await client.publicCalls.getCallStatus({
-    callId: "callId"
-});
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**request:** `Talkif.GetCallStatusRequest` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**requestOptions:** `PublicCallsClient.RequestOptions` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.publicCalls.<a href="/src/api/resources/publicCalls/client/Client.ts">relayOffer</a>({ ...params }) -> Talkif.WebRtcOfferResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-POST /api/v1/public/calls/calls/{callId}/offer
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```typescript
-await client.publicCalls.relayOffer({
-    callId: "callId",
-    sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n..."
-});
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**request:** `Talkif.WebRtcOfferRequest` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -5651,6 +5547,202 @@ await client.publicCalls.createSession({
 <dd>
 
 **request:** `Talkif.CreatePublicSessionRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `PublicCallsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.publicCalls.<a href="/src/api/resources/publicCalls/client/Client.ts">getCallStatus</a>({ ...params }) -> Talkif.PublicCallStatusResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+GET /api/v1/public/calls/{callId}
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.publicCalls.getCallStatus({
+    callId: "callId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.GetCallStatusRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `PublicCallsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.publicCalls.<a href="/src/api/resources/publicCalls/client/Client.ts">endCall</a>({ ...params }) -> void</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+POST /api/v1/public/calls/{callId}/end
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.publicCalls.endCall({
+    callId: "callId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.EndCallRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `PublicCallsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.publicCalls.<a href="/src/api/resources/publicCalls/client/Client.ts">relayOffer</a>({ ...params }) -> Talkif.WebRtcOfferResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+POST /api/v1/public/calls/{callId}/offer
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.publicCalls.relayOffer({
+    callId: "callId",
+    sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n..."
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.WebRtcOfferRequest` 
     
 </dd>
 </dl>
@@ -6033,6 +6125,1644 @@ await client.schedules.resumeSchedule({
 <dd>
 
 **requestOptions:** `SchedulesClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Transfers
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">listGroups</a>({ ...params }) -> Talkif.DestinationGroupListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Destination groups are named sets of destinations that ring together as one
+transfer target.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.listGroups();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.ListGroupsRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">createGroup</a>({ ...params }) -> Talkif.DestinationGroup</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+A destination group is a named set of destinations that ring together as
+one transfer target. With the `simultaneous` strategy every member rings at
+once and the first to answer is connected.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.createGroup({
+    members: [{
+            destinationId: "destinationId"
+        }],
+    name: "Sales team"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.CreateDestinationGroupRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">getGroup</a>({ ...params }) -> Talkif.DestinationGroup</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+A named set of destinations that ring together as one transfer target.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.getGroup({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.GetGroupRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">updateGroup</a>({ ...params }) -> Talkif.DestinationGroup</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Omitted fields keep their value; `members` replaces the whole list.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.updateGroup({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.UpdateDestinationGroupRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">deleteGroup</a>({ ...params }) -> void</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Refused with `in_use` while a published flow transfers to it; `meta.flows`
+names them.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.deleteGroup({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.DeleteGroupRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">listDestinations</a>({ ...params }) -> Talkif.TransferDestinationListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Destinations are the places a flow's Transfer node can send a call: a phone
+number, the people who are available for calls in the dashboard, or your
+own app.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.listDestinations();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.ListDestinationsRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">createDestination</a>({ ...params }) -> Talkif.TransferDestination</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+A destination is somewhere a Transfer node can send a call: a phone number,
+the people who are available for calls in the dashboard, or your own app
+(`app`: offers arrive as signed `transfer.offer` webhooks; the response
+carries the signing secret once, in `signingSecret`). Emergency,
+special-service and premium-rate numbers are refused.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.createDestination({
+    config: {
+        "key": "value"
+    },
+    kind: "phone",
+    name: "Sales desk"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.CreateTransferDestinationRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">getDestination</a>({ ...params }) -> Talkif.TransferDestination</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+One place a flow's Transfer node can send a call.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.getDestination({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.GetDestinationRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">updateDestination</a>({ ...params }) -> Talkif.TransferDestination</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+The kind cannot change. Sending `config` replaces the whole settings object.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.updateDestination({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.UpdateTransferDestinationRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">deleteDestination</a>({ ...params }) -> void</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Refused with `in_use` while a destination group lists it or a published
+flow transfers to it; `meta.groups` and `meta.flows` name them.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.deleteDestination({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.DeleteDestinationRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">listDeliveries</a>({ ...params }) -> Talkif.TransferAppDeliveryListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+The last 20 webhook deliveries (test sends and real offers), newest first.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.listDeliveries({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.ListDeliveriesRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">rotateSecret</a>({ ...params }) -> Talkif.TransferDestination</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Replaces the secret that signs `transfer.offer` webhooks and returns the new
+one once, in `signingSecret`. For 24 hours, until `previousSecretExpiresAt`,
+webhooks carry a second signature made with the previous secret
+(`Talkif-Signature: t=…,v1=<new>,v1=<previous>`), so your server can switch
+secrets without missing an offer.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.rotateSecret({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.RotateSecretRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">testDestination</a>({ ...params }) -> Talkif.TransferAppDeliveryResult</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Sends a sample `transfer.offer` webhook (fake caller, `"test": true`),
+signed like a real one, and reports how your server answered. Test offers
+cannot be accepted. The delivery is logged. At most 5 test sends per
+destination per minute and 30 per account per hour.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.testDestination({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.TestDestinationRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">listMemberTags</a>() -> Talkif.MemberTagCatalogResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Every tag at least one member of your organization carries, with how many
+members carry it. Use these in an `available_humans` destination's `tags`
+to ring only that team. Empty on a personal account.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.listMemberTags();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">listMembers</a>() -> Talkif.TransferMemberListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Every member of your organization, with the tags and weekly available
+hours that decide which transfers to people ring them. Tags and hours
+belong to the organization: the same member has the same tags and hours
+in every account of the organization. On a personal account the list is
+empty.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.listMembers();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">getMemberAvailability</a>({ ...params }) -> Talkif.MemberAvailability</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Whether the member takes transferred calls: `available`, `away` or
+`offline` (with the end time, who set it, and whether they are on a call
+right now). An away/offline whose end time passed reads as `available`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.getMemberAvailability({
+    memberId: "memberId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.GetMemberAvailabilityRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">setMemberAvailability</a>({ ...params }) -> Talkif.MemberAvailability</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Turns transferred calls on or off for a member, in every account of the
+organization: `away` or `offline`, optionally `until` a moment (then the
+member is available again by itself), or `available`. The member may set
+any status. An owner or admin may set another member `away` or
+`offline`, and may make them `available` again only if the member did not
+turn calls off themselves.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.setMemberAvailability({
+    memberId: "memberId",
+    status: "available"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.SetMemberAvailabilityRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">getMemberHours</a>({ ...params }) -> Talkif.MemberHoursResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.getMemberHours({
+    memberId: "memberId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.GetMemberHoursRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">setMemberHours</a>({ ...params }) -> Talkif.MemberHoursResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Sets the weekly schedule inside which transfers to people ring this
+member. Outside it the member is skipped even when available for calls;
+if nobody is left, the destination's nobody-available path runs. Hours
+belong to the organization and apply in every account of it. The member
+themselves, or an owner or admin.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.setMemberHours({
+    memberId: "memberId",
+    body: {
+        timezone: "Europe/Istanbul",
+        weekly: {}
+    }
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.SetMemberHoursRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">deleteMemberHours</a>({ ...params }) -> void</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Removes the schedule: the member is always within hours again. The member
+themselves, or an owner or admin.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.deleteMemberHours({
+    memberId: "memberId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.DeleteMemberHoursRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">getMemberTags</a>({ ...params }) -> Talkif.MemberTagsResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.getMemberTags({
+    memberId: "memberId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.GetMemberTagsRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">setMemberTags</a>({ ...params }) -> Talkif.MemberTagsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Sets the member's complete tag list. Tags group members into teams for
+transfers: an `available_humans` destination with `tags` rings only
+members carrying at least one of them. Tags belong to the organization,
+so the change applies in every account of the organization. Owner or
+admin only.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.setMemberTags({
+    memberId: "memberId",
+    tags: ["sales", "billing"]
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.SetMemberTagsRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">getOffer</a>({ ...params }) -> Talkif.TransferOffer</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+A ringing offer to one of your app destinations: the same body as the
+`transfer.offer` webhook. Only offers to app destinations of this account
+are visible. Requires an API key with the `transfer_offers:read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.getOffer({
+    offerId: "offerId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.GetOfferRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">acceptOffer</a>({ ...params }) -> Talkif.TransferOfferAcceptResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+The first accept wins; accept before `acceptUntil`. Without a body the
+reply carries a single-use WebSocket `joinUrl` for the call's audio; with
+`{"sdpOffer": "<SDP>"}` the call joins over WebRTC and the reply carries
+the SDP answer and ICE servers. Join within 10 seconds (20 for WebRTC) or
+the offer counts as unanswered. Requires an API key with the
+`transfer_offers:write` scope; repeating the accept with the same key
+returns a new join.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.acceptOffer({
+    offerId: "offerId",
+    body: {}
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.AcceptOfferRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transfers.<a href="/src/api/resources/transfers/client/Client.ts">declineOffer</a>({ ...params }) -> void</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Your app will not take this call: the transfer stops ringing it at once.
+Declining an offer that already ended, or that was already accepted, does
+nothing. Requires an API key with the `transfer_offers:write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.transfers.declineOffer({
+    offerId: "offerId"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Talkif.DeclineOfferRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransfersClient.RequestOptions` 
     
 </dd>
 </dl>
