@@ -1,3 +1,4 @@
+export * as accounts from "./accounts/index.js";
 export * from "./aiModels/client/requests/index.js";
 export * as aiModels from "./aiModels/index.js";
 export * from "./analytics/client/requests/index.js";
@@ -27,3 +28,5 @@ export * from "./publicCalls/client/requests/index.js";
 export * as publicCalls from "./publicCalls/index.js";
 export * from "./schedules/client/requests/index.js";
 export * as schedules from "./schedules/index.js";
+export * from "./transfers/client/requests/index.js";
+export * as transfers from "./transfers/index.js";

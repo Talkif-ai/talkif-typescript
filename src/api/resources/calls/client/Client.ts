@@ -27,6 +27,135 @@ export class CallsClient {
     }
 
     /**
+     * Returns the account's calls, newest first, with optional filters. Use `status` to narrow to live calls (for example `in_progress`), `flowId` / `campaignId` / `contactId` to scope by resource, and `startDate` / `endDate` for a time window.
+     *
+     * @param {Talkif.ListCallsRequest} request
+     * @param {CallsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Talkif.UnauthorizedError}
+     * @throws {@link Talkif.ForbiddenError}
+     * @throws {@link Talkif.TooManyRequestsError}
+     * @throws {@link Talkif.InternalServerError}
+     * @throws {@link errors.TalkifError}
+     * @throws {@link errors.TalkifTimeoutError}
+     *
+     * @example
+     *     await client.calls.listCalls()
+     */
+    public listCalls(
+        request: Talkif.ListCallsRequest = {},
+        requestOptions?: CallsClient.RequestOptions,
+    ): core.HttpResponsePromise<Talkif.CallListResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__listCalls(request, requestOptions));
+    }
+
+    private async __listCalls(
+        request: Talkif.ListCallsRequest = {},
+        requestOptions?: CallsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<Talkif.CallListResponse>> {
+        const {
+            limit,
+            offset,
+            startDate,
+            endDate,
+            status,
+            direction,
+            source,
+            phoneNumber,
+            isLead,
+            flowId,
+            contactId,
+            scheduleId,
+            campaignId,
+            providerType,
+            search,
+            sortBy,
+            sortDirection,
+        } = request;
+        const _queryParams: Record<string, unknown> = {
+            limit,
+            offset,
+            startDate: startDate != null ? startDate : undefined,
+            endDate: endDate != null ? endDate : undefined,
+            status: status != null ? status : undefined,
+            direction: direction != null ? direction : undefined,
+            source: source != null ? source : undefined,
+            phoneNumber,
+            isLead,
+            flowId,
+            contactId,
+            scheduleId,
+            campaignId,
+            providerType: providerType != null ? providerType : undefined,
+            search,
+            sortBy: sortBy != null ? sortBy : undefined,
+            sortDirection: sortDirection != null ? sortDirection : undefined,
+        };
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.TalkifEnvironment.Production,
+                "api/v1/calls",
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as Talkif.CallListResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 401:
+                    throw new Talkif.UnauthorizedError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Talkif.ForbiddenError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 429:
+                    throw new Talkif.TooManyRequestsError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 500:
+                    throw new Talkif.InternalServerError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.TalkifError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/api/v1/calls");
+    }
+
+    /**
      * POST /api/v1/calls
      *
      * SECURITY: Verifies account access, phone ownership, provider ownership, flow ownership
@@ -146,245 +275,6 @@ export class CallsClient {
         }
 
         return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/api/v1/calls");
-    }
-
-    /**
-     * GET /api/v1/calls/active
-     *
-     * @param {Talkif.GetActiveCallsRequest} request
-     * @param {CallsClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link Talkif.UnauthorizedError}
-     * @throws {@link Talkif.ForbiddenError}
-     * @throws {@link Talkif.TooManyRequestsError}
-     * @throws {@link Talkif.InternalServerError}
-     * @throws {@link errors.TalkifError}
-     * @throws {@link errors.TalkifTimeoutError}
-     *
-     * @example
-     *     await client.calls.getActiveCalls()
-     */
-    public async getActiveCalls(
-        request: Talkif.GetActiveCallsRequest = {},
-        requestOptions?: CallsClient.RequestOptions,
-    ): Promise<core.Page<Talkif.CallResponse, Talkif.CallListResponse>> {
-        const list = core.HttpResponsePromise.interceptFunction(
-            async (request: Talkif.GetActiveCallsRequest): Promise<core.WithRawResponse<Talkif.CallListResponse>> => {
-                const { limit, offset } = request;
-                const _queryParams: Record<string, unknown> = {
-                    limit,
-                    offset,
-                };
-                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-                    _authRequest.headers,
-                    this._options?.headers,
-                    requestOptions?.headers,
-                );
-                const _response = await core.fetcher({
-                    url: core.url.join(
-                        (await core.Supplier.get(this._options.baseUrl)) ??
-                            (await core.Supplier.get(this._options.environment)) ??
-                            environments.TalkifEnvironment.Production,
-                        "api/v1/calls/active",
-                    ),
-                    method: "GET",
-                    headers: _headers,
-                    queryString: core.url
-                        .queryBuilder()
-                        .addMany(_queryParams)
-                        .mergeAdditional(requestOptions?.queryParams)
-                        .build(),
-                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-                    abortSignal: requestOptions?.abortSignal,
-                    fetchFn: this._options?.fetch,
-                    logging: this._options.logging,
-                });
-                if (_response.ok) {
-                    return { data: _response.body as Talkif.CallListResponse, rawResponse: _response.rawResponse };
-                }
-                if (_response.error.reason === "status-code") {
-                    switch (_response.error.statusCode) {
-                        case 401:
-                            throw new Talkif.UnauthorizedError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        case 403:
-                            throw new Talkif.ForbiddenError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        case 429:
-                            throw new Talkif.TooManyRequestsError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        case 500:
-                            throw new Talkif.InternalServerError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        default:
-                            throw new errors.TalkifError({
-                                statusCode: _response.error.statusCode,
-                                body: _response.error.body,
-                                rawResponse: _response.rawResponse,
-                            });
-                    }
-                }
-                return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/api/v1/calls/active");
-            },
-        );
-        let _offset = request?.offset != null ? request?.offset : 0;
-        const dataWithRawResponse = await list(request).withRawResponse();
-        return new core.Page<Talkif.CallResponse, Talkif.CallListResponse>({
-            response: dataWithRawResponse.data,
-            rawResponse: dataWithRawResponse.rawResponse,
-            hasNextPage: (response) =>
-                (response?.calls ?? []).length > 0 &&
-                (request?.limit == null || (response?.calls ?? []).length >= request?.limit),
-            getItems: (response) => response?.calls ?? [],
-            loadPage: (response) => {
-                _offset += response?.calls != null ? response.calls.length : 1;
-                return list(core.setObjectProperty(request, "offset", _offset));
-            },
-        });
-    }
-
-    /**
-     * GET /api/v1/calls/history
-     *
-     * @param {Talkif.GetCallHistoryRequest} request
-     * @param {CallsClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link Talkif.UnauthorizedError}
-     * @throws {@link Talkif.ForbiddenError}
-     * @throws {@link Talkif.TooManyRequestsError}
-     * @throws {@link Talkif.InternalServerError}
-     * @throws {@link errors.TalkifError}
-     * @throws {@link errors.TalkifTimeoutError}
-     *
-     * @example
-     *     await client.calls.getCallHistory()
-     */
-    public async getCallHistory(
-        request: Talkif.GetCallHistoryRequest = {},
-        requestOptions?: CallsClient.RequestOptions,
-    ): Promise<core.Page<Talkif.CallResponse, Talkif.CallListResponse>> {
-        const list = core.HttpResponsePromise.interceptFunction(
-            async (request: Talkif.GetCallHistoryRequest): Promise<core.WithRawResponse<Talkif.CallListResponse>> => {
-                const {
-                    limit,
-                    offset,
-                    startDate,
-                    endDate,
-                    status,
-                    direction,
-                    source,
-                    phoneNumber,
-                    isLead,
-                    flowId,
-                    contactId,
-                    scheduleId,
-                    campaignId,
-                    providerType,
-                    search,
-                } = request;
-                const _queryParams: Record<string, unknown> = {
-                    limit,
-                    offset,
-                    startDate: startDate != null ? startDate : undefined,
-                    endDate: endDate != null ? endDate : undefined,
-                    status: status != null ? status : undefined,
-                    direction: direction != null ? direction : undefined,
-                    source: source != null ? source : undefined,
-                    phoneNumber,
-                    isLead,
-                    flowId,
-                    contactId,
-                    scheduleId,
-                    campaignId,
-                    providerType: providerType != null ? providerType : undefined,
-                    search,
-                };
-                const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-                const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-                    _authRequest.headers,
-                    this._options?.headers,
-                    requestOptions?.headers,
-                );
-                const _response = await core.fetcher({
-                    url: core.url.join(
-                        (await core.Supplier.get(this._options.baseUrl)) ??
-                            (await core.Supplier.get(this._options.environment)) ??
-                            environments.TalkifEnvironment.Production,
-                        "api/v1/calls/history",
-                    ),
-                    method: "GET",
-                    headers: _headers,
-                    queryString: core.url
-                        .queryBuilder()
-                        .addMany(_queryParams)
-                        .mergeAdditional(requestOptions?.queryParams)
-                        .build(),
-                    timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-                    maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-                    abortSignal: requestOptions?.abortSignal,
-                    fetchFn: this._options?.fetch,
-                    logging: this._options.logging,
-                });
-                if (_response.ok) {
-                    return { data: _response.body as Talkif.CallListResponse, rawResponse: _response.rawResponse };
-                }
-                if (_response.error.reason === "status-code") {
-                    switch (_response.error.statusCode) {
-                        case 401:
-                            throw new Talkif.UnauthorizedError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        case 403:
-                            throw new Talkif.ForbiddenError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        case 429:
-                            throw new Talkif.TooManyRequestsError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        case 500:
-                            throw new Talkif.InternalServerError(
-                                _response.error.body as Talkif.ErrorResponse,
-                                _response.rawResponse,
-                            );
-                        default:
-                            throw new errors.TalkifError({
-                                statusCode: _response.error.statusCode,
-                                body: _response.error.body,
-                                rawResponse: _response.rawResponse,
-                            });
-                    }
-                }
-                return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/api/v1/calls/history");
-            },
-        );
-        let _offset = request?.offset != null ? request?.offset : 0;
-        const dataWithRawResponse = await list(request).withRawResponse();
-        return new core.Page<Talkif.CallResponse, Talkif.CallListResponse>({
-            response: dataWithRawResponse.data,
-            rawResponse: dataWithRawResponse.rawResponse,
-            hasNextPage: (response) =>
-                (response?.calls ?? []).length > 0 &&
-                (request?.limit == null || (response?.calls ?? []).length >= request?.limit),
-            getItems: (response) => response?.calls ?? [],
-            loadPage: (response) => {
-                _offset += response?.calls != null ? response.calls.length : 1;
-                return list(core.setObjectProperty(request, "offset", _offset));
-            },
-        });
     }
 
     /**
@@ -732,7 +622,8 @@ export class CallsClient {
      * Charges for actual storage duration before deletion (billing at lifecycle end).
      * Uses idempotency key to prevent double-charging if racing with retention job.
      *
-     * SECURITY: Verifies account access, call ownership.
+     * Owner or admin only: deleting a recording destroys data the account may
+     * need to keep. With an API key, the key's creator must be an owner or admin.
      *
      * @param {Talkif.DeleteCallRecordingRequest} request
      * @param {CallsClient.RequestOptions} requestOptions - Request-specific configuration.

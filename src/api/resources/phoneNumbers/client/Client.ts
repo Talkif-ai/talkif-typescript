@@ -168,21 +168,60 @@ export class PhoneNumbersClient {
     public listAvailableNumbers(
         request: Talkif.ListAvailableNumbersRequest,
         requestOptions?: PhoneNumbersClient.RequestOptions,
-    ): core.HttpResponsePromise<Talkif.AvailablePhoneNumber[]> {
+    ): core.HttpResponsePromise<Talkif.AvailableNumbersResponse> {
         return core.HttpResponsePromise.fromPromise(this.__listAvailableNumbers(request, requestOptions));
     }
 
     private async __listAvailableNumbers(
         request: Talkif.ListAvailableNumbersRequest,
         requestOptions?: PhoneNumbersClient.RequestOptions,
-    ): Promise<core.WithRawResponse<Talkif.AvailablePhoneNumber[]>> {
-        const { providerId, countryCode, numberType, areaCode, contains, limit } = request;
+    ): Promise<core.WithRawResponse<Talkif.AvailableNumbersResponse>> {
+        const {
+            providerId,
+            countryCode,
+            numberType,
+            areaCode,
+            contains,
+            inPostalCode,
+            inRegion,
+            inRateCenter,
+            inLata,
+            inLocality,
+            nearNumber,
+            nearLatLong,
+            distance,
+            smsEnabled,
+            mmsEnabled,
+            voiceEnabled,
+            faxEnabled,
+            beta,
+            excludeAllAddressRequired,
+            excludeLocalAddressRequired,
+            excludeForeignAddressRequired,
+            limit,
+        } = request;
         const _queryParams: Record<string, unknown> = {
             providerId,
             countryCode,
             numberType,
             areaCode,
             contains,
+            inPostalCode,
+            inRegion,
+            inRateCenter,
+            inLata,
+            inLocality,
+            nearNumber,
+            nearLatLong,
+            distance,
+            smsEnabled,
+            mmsEnabled,
+            voiceEnabled,
+            faxEnabled,
+            beta,
+            excludeAllAddressRequired,
+            excludeLocalAddressRequired,
+            excludeForeignAddressRequired,
             limit,
         };
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
@@ -212,7 +251,7 @@ export class PhoneNumbersClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as Talkif.AvailablePhoneNumber[], rawResponse: _response.rawResponse };
+            return { data: _response.body as Talkif.AvailableNumbersResponse, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {

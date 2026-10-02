@@ -24,7 +24,7 @@ export class PublicCallsClient {
     }
 
     /**
-     * POST /api/v1/public/calls/calls
+     * POST /api/v1/public/calls
      *
      * @param {PublicCallsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
@@ -61,7 +61,7 @@ export class PublicCallsClient {
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)) ??
                     environments.TalkifEnvironment.Production,
-                "api/v1/public/calls/calls",
+                "api/v1/public/calls",
             ),
             method: "POST",
             headers: _headers,
@@ -119,216 +119,7 @@ export class PublicCallsClient {
             }
         }
 
-        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/api/v1/public/calls/calls");
-    }
-
-    /**
-     * GET /api/v1/public/calls/calls/{callId}
-     *
-     * @param {Talkif.GetCallStatusRequest} request
-     * @param {PublicCallsClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link Talkif.UnauthorizedError}
-     * @throws {@link Talkif.ForbiddenError}
-     * @throws {@link Talkif.NotFoundError}
-     * @throws {@link Talkif.TooManyRequestsError}
-     * @throws {@link Talkif.InternalServerError}
-     * @throws {@link errors.TalkifError}
-     * @throws {@link errors.TalkifTimeoutError}
-     *
-     * @example
-     *     await client.publicCalls.getCallStatus({
-     *         callId: "callId"
-     *     })
-     */
-    public getCallStatus(
-        request: Talkif.GetCallStatusRequest,
-        requestOptions?: PublicCallsClient.RequestOptions,
-    ): core.HttpResponsePromise<Talkif.PublicCallStatusResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__getCallStatus(request, requestOptions));
-    }
-
-    private async __getCallStatus(
-        request: Talkif.GetCallStatusRequest,
-        requestOptions?: PublicCallsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<Talkif.PublicCallStatusResponse>> {
-        const { callId } = request;
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)) ??
-                    environments.TalkifEnvironment.Production,
-                `api/v1/public/calls/calls/${core.url.encodePathParam(callId)}`,
-            ),
-            method: "GET",
-            headers: _headers,
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as Talkif.PublicCallStatusResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 401:
-                    throw new Talkif.UnauthorizedError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 403:
-                    throw new Talkif.ForbiddenError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 404:
-                    throw new Talkif.NotFoundError(_response.error.body as Talkif.ErrorResponse, _response.rawResponse);
-                case 429:
-                    throw new Talkif.TooManyRequestsError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 500:
-                    throw new Talkif.InternalServerError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                default:
-                    throw new errors.TalkifError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "GET",
-            "/api/v1/public/calls/calls/{callId}",
-        );
-    }
-
-    /**
-     * POST /api/v1/public/calls/calls/{callId}/offer
-     *
-     * @param {Talkif.WebRtcOfferRequest} request
-     * @param {PublicCallsClient.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link Talkif.UnauthorizedError}
-     * @throws {@link Talkif.ForbiddenError}
-     * @throws {@link Talkif.NotFoundError}
-     * @throws {@link Talkif.ConflictError}
-     * @throws {@link Talkif.TooManyRequestsError}
-     * @throws {@link Talkif.InternalServerError}
-     * @throws {@link Talkif.ServiceUnavailableError}
-     * @throws {@link errors.TalkifError}
-     * @throws {@link errors.TalkifTimeoutError}
-     *
-     * @example
-     *     await client.publicCalls.relayOffer({
-     *         callId: "callId",
-     *         sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n..."
-     *     })
-     */
-    public relayOffer(
-        request: Talkif.WebRtcOfferRequest,
-        requestOptions?: PublicCallsClient.RequestOptions,
-    ): core.HttpResponsePromise<Talkif.WebRtcOfferResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__relayOffer(request, requestOptions));
-    }
-
-    private async __relayOffer(
-        request: Talkif.WebRtcOfferRequest,
-        requestOptions?: PublicCallsClient.RequestOptions,
-    ): Promise<core.WithRawResponse<Talkif.WebRtcOfferResponse>> {
-        const { callId, ..._body } = request;
-        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            _authRequest.headers,
-            this._options?.headers,
-            requestOptions?.headers,
-        );
-        const _response = await core.fetcher({
-            url: core.url.join(
-                (await core.Supplier.get(this._options.baseUrl)) ??
-                    (await core.Supplier.get(this._options.environment)) ??
-                    environments.TalkifEnvironment.Production,
-                `api/v1/public/calls/calls/${core.url.encodePathParam(callId)}/offer`,
-            ),
-            method: "POST",
-            headers: _headers,
-            contentType: "application/json",
-            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
-            requestType: "json",
-            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
-            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
-            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
-            abortSignal: requestOptions?.abortSignal,
-            fetchFn: this._options?.fetch,
-            logging: this._options.logging,
-        });
-        if (_response.ok) {
-            return { data: _response.body as Talkif.WebRtcOfferResponse, rawResponse: _response.rawResponse };
-        }
-
-        if (_response.error.reason === "status-code") {
-            switch (_response.error.statusCode) {
-                case 401:
-                    throw new Talkif.UnauthorizedError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 403:
-                    throw new Talkif.ForbiddenError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 404:
-                    throw new Talkif.NotFoundError(_response.error.body as Talkif.ErrorResponse, _response.rawResponse);
-                case 409:
-                    throw new Talkif.ConflictError(_response.error.body as Talkif.ErrorResponse, _response.rawResponse);
-                case 429:
-                    throw new Talkif.TooManyRequestsError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 500:
-                    throw new Talkif.InternalServerError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                case 503:
-                    throw new Talkif.ServiceUnavailableError(
-                        _response.error.body as Talkif.ErrorResponse,
-                        _response.rawResponse,
-                    );
-                default:
-                    throw new errors.TalkifError({
-                        statusCode: _response.error.statusCode,
-                        body: _response.error.body,
-                        rawResponse: _response.rawResponse,
-                    });
-            }
-        }
-
-        return handleNonStatusCodeError(
-            _response.error,
-            _response.rawResponse,
-            "POST",
-            "/api/v1/public/calls/calls/{callId}/offer",
-        );
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/api/v1/public/calls");
     }
 
     /**
@@ -508,5 +299,313 @@ export class PublicCallsClient {
         }
 
         return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/api/v1/public/calls/session");
+    }
+
+    /**
+     * GET /api/v1/public/calls/{callId}
+     *
+     * @param {Talkif.GetCallStatusRequest} request
+     * @param {PublicCallsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Talkif.UnauthorizedError}
+     * @throws {@link Talkif.ForbiddenError}
+     * @throws {@link Talkif.NotFoundError}
+     * @throws {@link Talkif.TooManyRequestsError}
+     * @throws {@link Talkif.InternalServerError}
+     * @throws {@link errors.TalkifError}
+     * @throws {@link errors.TalkifTimeoutError}
+     *
+     * @example
+     *     await client.publicCalls.getCallStatus({
+     *         callId: "callId"
+     *     })
+     */
+    public getCallStatus(
+        request: Talkif.GetCallStatusRequest,
+        requestOptions?: PublicCallsClient.RequestOptions,
+    ): core.HttpResponsePromise<Talkif.PublicCallStatusResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__getCallStatus(request, requestOptions));
+    }
+
+    private async __getCallStatus(
+        request: Talkif.GetCallStatusRequest,
+        requestOptions?: PublicCallsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<Talkif.PublicCallStatusResponse>> {
+        const { callId } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.TalkifEnvironment.Production,
+                `api/v1/public/calls/${core.url.encodePathParam(callId)}`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as Talkif.PublicCallStatusResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 401:
+                    throw new Talkif.UnauthorizedError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Talkif.ForbiddenError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new Talkif.NotFoundError(_response.error.body as Talkif.ErrorResponse, _response.rawResponse);
+                case 429:
+                    throw new Talkif.TooManyRequestsError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 500:
+                    throw new Talkif.InternalServerError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.TalkifError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/api/v1/public/calls/{callId}");
+    }
+
+    /**
+     * POST /api/v1/public/calls/{callId}/end
+     *
+     * @param {Talkif.EndCallRequest} request
+     * @param {PublicCallsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Talkif.UnauthorizedError}
+     * @throws {@link Talkif.ForbiddenError}
+     * @throws {@link Talkif.NotFoundError}
+     * @throws {@link Talkif.TooManyRequestsError}
+     * @throws {@link Talkif.InternalServerError}
+     * @throws {@link Talkif.ServiceUnavailableError}
+     * @throws {@link errors.TalkifError}
+     * @throws {@link errors.TalkifTimeoutError}
+     *
+     * @example
+     *     await client.publicCalls.endCall({
+     *         callId: "callId"
+     *     })
+     */
+    public endCall(
+        request: Talkif.EndCallRequest,
+        requestOptions?: PublicCallsClient.RequestOptions,
+    ): core.HttpResponsePromise<void> {
+        return core.HttpResponsePromise.fromPromise(this.__endCall(request, requestOptions));
+    }
+
+    private async __endCall(
+        request: Talkif.EndCallRequest,
+        requestOptions?: PublicCallsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<void>> {
+        const { callId } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.TalkifEnvironment.Production,
+                `api/v1/public/calls/${core.url.encodePathParam(callId)}/end`,
+            ),
+            method: "POST",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: undefined, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 401:
+                    throw new Talkif.UnauthorizedError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Talkif.ForbiddenError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new Talkif.NotFoundError(_response.error.body as Talkif.ErrorResponse, _response.rawResponse);
+                case 429:
+                    throw new Talkif.TooManyRequestsError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 500:
+                    throw new Talkif.InternalServerError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new Talkif.ServiceUnavailableError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.TalkifError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/api/v1/public/calls/{callId}/end",
+        );
+    }
+
+    /**
+     * POST /api/v1/public/calls/{callId}/offer
+     *
+     * @param {Talkif.WebRtcOfferRequest} request
+     * @param {PublicCallsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Talkif.UnauthorizedError}
+     * @throws {@link Talkif.ForbiddenError}
+     * @throws {@link Talkif.NotFoundError}
+     * @throws {@link Talkif.ConflictError}
+     * @throws {@link Talkif.TooManyRequestsError}
+     * @throws {@link Talkif.InternalServerError}
+     * @throws {@link Talkif.ServiceUnavailableError}
+     * @throws {@link errors.TalkifError}
+     * @throws {@link errors.TalkifTimeoutError}
+     *
+     * @example
+     *     await client.publicCalls.relayOffer({
+     *         callId: "callId",
+     *         sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n..."
+     *     })
+     */
+    public relayOffer(
+        request: Talkif.WebRtcOfferRequest,
+        requestOptions?: PublicCallsClient.RequestOptions,
+    ): core.HttpResponsePromise<Talkif.WebRtcOfferResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__relayOffer(request, requestOptions));
+    }
+
+    private async __relayOffer(
+        request: Talkif.WebRtcOfferRequest,
+        requestOptions?: PublicCallsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<Talkif.WebRtcOfferResponse>> {
+        const { callId, ..._body } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.TalkifEnvironment.Production,
+                `api/v1/public/calls/${core.url.encodePathParam(callId)}/offer`,
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            requestType: "json",
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as Talkif.WebRtcOfferResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 401:
+                    throw new Talkif.UnauthorizedError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Talkif.ForbiddenError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new Talkif.NotFoundError(_response.error.body as Talkif.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new Talkif.ConflictError(_response.error.body as Talkif.ErrorResponse, _response.rawResponse);
+                case 429:
+                    throw new Talkif.TooManyRequestsError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 500:
+                    throw new Talkif.InternalServerError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new Talkif.ServiceUnavailableError(
+                        _response.error.body as Talkif.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.TalkifError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/api/v1/public/calls/{callId}/offer",
+        );
     }
 }

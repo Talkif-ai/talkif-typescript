@@ -10,7 +10,7 @@ describe("PublicCallsClient", () => {
         const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = {
-            botId: "catflow-bot-abc123",
+            botId: "bot-7f3a9c",
             callId: "550e8400-e29b-41d4-a716-446655440000",
             flowId: "550e8400-e29b-41d4-a716-446655440000",
             status: "queued",
@@ -18,7 +18,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(200)
             .jsonBody(rawResponseBody)
@@ -36,7 +36,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(401)
             .jsonBody(rawResponseBody)
@@ -55,7 +55,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(402)
             .jsonBody(rawResponseBody)
@@ -74,7 +74,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(403)
             .jsonBody(rawResponseBody)
@@ -93,7 +93,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(409)
             .jsonBody(rawResponseBody)
@@ -112,7 +112,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(429)
             .jsonBody(rawResponseBody)
@@ -131,7 +131,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(500)
             .jsonBody(rawResponseBody)
@@ -150,7 +150,7 @@ describe("PublicCallsClient", () => {
 
         server
             .mockEndpoint()
-            .post("/api/v1/public/calls/calls")
+            .post("/api/v1/public/calls")
             .respondWith()
             .statusCode(503)
             .jsonBody(rawResponseBody)
@@ -158,318 +158,6 @@ describe("PublicCallsClient", () => {
 
         await expect(async () => {
             return await client.publicCalls.createCall();
-        }).rejects.toThrow(Talkif.ServiceUnavailableError);
-    });
-
-    test("get_call_status (1)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { callId: "550e8400-e29b-41d4-a716-446655440000", duration: 42, status: "queued" };
-
-        server
-            .mockEndpoint()
-            .get("/api/v1/public/calls/calls/callId")
-            .respondWith()
-            .statusCode(200)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        const response = await client.publicCalls.getCallStatus({
-            callId: "callId",
-        });
-        expect(response).toEqual(rawResponseBody);
-    });
-
-    test("get_call_status (2)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .get("/api/v1/public/calls/calls/callId")
-            .respondWith()
-            .statusCode(401)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.getCallStatus({
-                callId: "callId",
-            });
-        }).rejects.toThrow(Talkif.UnauthorizedError);
-    });
-
-    test("get_call_status (3)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .get("/api/v1/public/calls/calls/callId")
-            .respondWith()
-            .statusCode(403)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.getCallStatus({
-                callId: "callId",
-            });
-        }).rejects.toThrow(Talkif.ForbiddenError);
-    });
-
-    test("get_call_status (4)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .get("/api/v1/public/calls/calls/callId")
-            .respondWith()
-            .statusCode(404)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.getCallStatus({
-                callId: "callId",
-            });
-        }).rejects.toThrow(Talkif.NotFoundError);
-    });
-
-    test("get_call_status (5)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .get("/api/v1/public/calls/calls/callId")
-            .respondWith()
-            .statusCode(429)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.getCallStatus({
-                callId: "callId",
-            });
-        }).rejects.toThrow(Talkif.TooManyRequestsError);
-    });
-
-    test("get_call_status (6)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .get("/api/v1/public/calls/calls/callId")
-            .respondWith()
-            .statusCode(500)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.getCallStatus({
-                callId: "callId",
-            });
-        }).rejects.toThrow(Talkif.InternalServerError);
-    });
-
-    test("relay_offer (1)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n..." };
-        const rawResponseBody = {
-            botId: "catflow-bot-abc123",
-            sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n...",
-            sdpType: "answer",
-        };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(200)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        const response = await client.publicCalls.relayOffer({
-            callId: "callId",
-            sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n...",
-        });
-        expect(response).toEqual(rawResponseBody);
-    });
-
-    test("relay_offer (2)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "sdp" };
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(401)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.relayOffer({
-                callId: "callId",
-                sdp: "sdp",
-            });
-        }).rejects.toThrow(Talkif.UnauthorizedError);
-    });
-
-    test("relay_offer (3)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "sdp" };
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(403)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.relayOffer({
-                callId: "callId",
-                sdp: "sdp",
-            });
-        }).rejects.toThrow(Talkif.ForbiddenError);
-    });
-
-    test("relay_offer (4)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "sdp" };
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(404)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.relayOffer({
-                callId: "callId",
-                sdp: "sdp",
-            });
-        }).rejects.toThrow(Talkif.NotFoundError);
-    });
-
-    test("relay_offer (5)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "sdp" };
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(409)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.relayOffer({
-                callId: "callId",
-                sdp: "sdp",
-            });
-        }).rejects.toThrow(Talkif.ConflictError);
-    });
-
-    test("relay_offer (6)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "sdp" };
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(429)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.relayOffer({
-                callId: "callId",
-                sdp: "sdp",
-            });
-        }).rejects.toThrow(Talkif.TooManyRequestsError);
-    });
-
-    test("relay_offer (7)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "sdp" };
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(500)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.relayOffer({
-                callId: "callId",
-                sdp: "sdp",
-            });
-        }).rejects.toThrow(Talkif.InternalServerError);
-    });
-
-    test("relay_offer (8)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { sdp: "sdp" };
-        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
-
-        server
-            .mockEndpoint()
-            .post("/api/v1/public/calls/calls/callId/offer")
-            .jsonBody(rawRequestBody)
-            .respondWith()
-            .statusCode(503)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.publicCalls.relayOffer({
-                callId: "callId",
-                sdp: "sdp",
-            });
         }).rejects.toThrow(Talkif.ServiceUnavailableError);
     });
 
@@ -694,6 +382,456 @@ describe("PublicCallsClient", () => {
         await expect(async () => {
             return await client.publicCalls.createSession({
                 publishableKey: "publishableKey",
+            });
+        }).rejects.toThrow(Talkif.ServiceUnavailableError);
+    });
+
+    test("get_call_status (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { callId: "550e8400-e29b-41d4-a716-446655440000", duration: 42, status: "queued" };
+
+        server
+            .mockEndpoint()
+            .get("/api/v1/public/calls/callId")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.publicCalls.getCallStatus({
+            callId: "callId",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("get_call_status (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .get("/api/v1/public/calls/callId")
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.getCallStatus({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.UnauthorizedError);
+    });
+
+    test("get_call_status (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .get("/api/v1/public/calls/callId")
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.getCallStatus({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.ForbiddenError);
+    });
+
+    test("get_call_status (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .get("/api/v1/public/calls/callId")
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.getCallStatus({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.NotFoundError);
+    });
+
+    test("get_call_status (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .get("/api/v1/public/calls/callId")
+            .respondWith()
+            .statusCode(429)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.getCallStatus({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.TooManyRequestsError);
+    });
+
+    test("get_call_status (6)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .get("/api/v1/public/calls/callId")
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.getCallStatus({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.InternalServerError);
+    });
+
+    test("end_call (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        server.mockEndpoint().post("/api/v1/public/calls/callId/end").respondWith().statusCode(200).build();
+
+        const response = await client.publicCalls.endCall({
+            callId: "callId",
+        });
+        expect(response).toEqual(undefined);
+    });
+
+    test("end_call (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/end")
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.endCall({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.UnauthorizedError);
+    });
+
+    test("end_call (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/end")
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.endCall({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.ForbiddenError);
+    });
+
+    test("end_call (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/end")
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.endCall({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.NotFoundError);
+    });
+
+    test("end_call (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/end")
+            .respondWith()
+            .statusCode(429)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.endCall({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.TooManyRequestsError);
+    });
+
+    test("end_call (6)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/end")
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.endCall({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.InternalServerError);
+    });
+
+    test("end_call (7)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/end")
+            .respondWith()
+            .statusCode(503)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.endCall({
+                callId: "callId",
+            });
+        }).rejects.toThrow(Talkif.ServiceUnavailableError);
+    });
+
+    test("relay_offer (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n..." };
+        const rawResponseBody = {
+            botId: "bot-7f3a9c",
+            sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n...",
+            sdpType: "answer",
+        };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.publicCalls.relayOffer({
+            callId: "callId",
+            sdp: "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\n...",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("relay_offer (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "sdp" };
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.relayOffer({
+                callId: "callId",
+                sdp: "sdp",
+            });
+        }).rejects.toThrow(Talkif.UnauthorizedError);
+    });
+
+    test("relay_offer (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "sdp" };
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.relayOffer({
+                callId: "callId",
+                sdp: "sdp",
+            });
+        }).rejects.toThrow(Talkif.ForbiddenError);
+    });
+
+    test("relay_offer (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "sdp" };
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.relayOffer({
+                callId: "callId",
+                sdp: "sdp",
+            });
+        }).rejects.toThrow(Talkif.NotFoundError);
+    });
+
+    test("relay_offer (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "sdp" };
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(409)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.relayOffer({
+                callId: "callId",
+                sdp: "sdp",
+            });
+        }).rejects.toThrow(Talkif.ConflictError);
+    });
+
+    test("relay_offer (6)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "sdp" };
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(429)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.relayOffer({
+                callId: "callId",
+                sdp: "sdp",
+            });
+        }).rejects.toThrow(Talkif.TooManyRequestsError);
+    });
+
+    test("relay_offer (7)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "sdp" };
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.relayOffer({
+                callId: "callId",
+                sdp: "sdp",
+            });
+        }).rejects.toThrow(Talkif.InternalServerError);
+    });
+
+    test("relay_offer (8)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+        const rawRequestBody = { sdp: "sdp" };
+        const rawResponseBody = { code: "invalid_credentials", detail: "detail", status: 1, title: "title" };
+
+        server
+            .mockEndpoint()
+            .post("/api/v1/public/calls/callId/offer")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(503)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.publicCalls.relayOffer({
+                callId: "callId",
+                sdp: "sdp",
             });
         }).rejects.toThrow(Talkif.ServiceUnavailableError);
     });

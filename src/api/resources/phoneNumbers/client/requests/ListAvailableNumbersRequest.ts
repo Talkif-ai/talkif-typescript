@@ -8,16 +8,48 @@
  *     }
  */
 export interface ListAvailableNumbersRequest {
-    /** Provider ID */
+    /** Provider ID (required) */
     providerId: string;
-    /** ISO country code (e.g., US, GB) */
+    /** ISO country code (required, e.g. "US", "GB", "CA") */
     countryCode: string;
-    /** Number type: local, toll_free, or mobile */
+    /** Number type: "local", "toll_free", or "mobile" (default: "local") */
     numberType?: string;
     /** Area code filter (US/Canada only) */
     areaCode?: string;
-    /** Pattern to match in the phone number */
+    /** Pattern to match in the phone number (supports wildcards: *, %) */
     contains?: string;
-    /** Max results (default: 20, max: 1000) */
+    /** Filter by postal/ZIP code (US/Canada only) */
+    inPostalCode?: string;
+    /** Filter by state/region (US/Canada only) */
+    inRegion?: string;
+    /** Filter by rate center (US/Canada only, requires in_lata) */
+    inRateCenter?: string;
+    /** Filter by LATA (US/Canada only) */
+    inLata?: string;
+    /** Filter by locality/city */
+    inLocality?: string;
+    /** Find numbers geographically close to this phone number */
+    nearNumber?: string;
+    /** Find numbers near lat,long (e.g. "37.7749,-122.4194") */
+    nearLatLong?: string;
+    /** Distance radius in miles for geographic searches (default: 25, max: 500) */
+    distance?: number;
+    /** Filter for SMS-capable numbers */
+    smsEnabled?: boolean;
+    /** Filter for MMS-capable numbers */
+    mmsEnabled?: boolean;
+    /** Filter for voice-capable numbers */
+    voiceEnabled?: boolean;
+    /** Filter for fax-capable numbers */
+    faxEnabled?: boolean;
+    /** Filter for beta numbers (new to Twilio) */
+    beta?: boolean;
+    /** Exclude numbers that require any address */
+    excludeAllAddressRequired?: boolean;
+    /** Exclude numbers that require a local address */
+    excludeLocalAddressRequired?: boolean;
+    /** Exclude numbers that require a foreign address */
+    excludeForeignAddressRequired?: boolean;
+    /** Maximum number of results (default: 20, max: 1000) */
     limit?: number;
 }

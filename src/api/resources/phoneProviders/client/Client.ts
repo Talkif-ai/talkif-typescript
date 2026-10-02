@@ -16,7 +16,7 @@ export declare namespace PhoneProvidersClient {
 }
 
 /**
- * Manage phone providers (Twilio, SIP, BYOC)
+ * Manage phone providers (Twilio, SIP, own Twilio)
  */
 export class PhoneProvidersClient {
     protected readonly _options: NormalizedClientOptionsWithAuth<PhoneProvidersClient.Options>;

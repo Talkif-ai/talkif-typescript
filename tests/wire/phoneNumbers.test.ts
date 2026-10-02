@@ -133,23 +133,26 @@ describe("PhoneNumbersClient", () => {
         const server = mockServerPool.createServer();
         const client = new TalkifClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
-        const rawResponseBody = [
-            {
-                addressRequirements: "none",
-                beta: false,
-                capabilities: ["SMS"],
-                friendlyName: "(555) 123-4567",
-                isoCountry: "US",
-                lata: "lata",
-                latitude: 1.1,
-                locality: "locality",
-                longitude: 1.1,
-                phoneNumber: "+15551234567",
-                postalCode: "postalCode",
-                rateCenter: "rateCenter",
-                region: "region",
-            },
-        ];
+        const rawResponseBody = {
+            numbers: [
+                {
+                    addressRequirements: "none",
+                    beta: false,
+                    capabilities: ["SMS"],
+                    friendlyName: "(555) 123-4567",
+                    isoCountry: "US",
+                    lata: "lata",
+                    latitude: 1.1,
+                    locality: "locality",
+                    longitude: 1.1,
+                    phoneNumber: "+15551234567",
+                    postalCode: "postalCode",
+                    rateCenter: "rateCenter",
+                    region: "region",
+                },
+            ],
+            query: { areaCode: "areaCode", contains: "contains", countryCode: "US" },
+        };
 
         server
             .mockEndpoint()

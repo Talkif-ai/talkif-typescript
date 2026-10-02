@@ -6,7 +6,7 @@ import type * as Talkif from "../../../../index.js";
  * @example
  *     {}
  */
-export interface GetCallHistoryRequest {
+export interface ListCallsRequest {
     /** Maximum number of items to return (default: 20, max: 100) */
     limit?: number;
     /** Number of items to skip for pagination (default: 0) */
@@ -41,4 +41,8 @@ export interface GetCallHistoryRequest {
      * were never saved as contacts.
      */
     search?: string;
+    /** Field to sort results by (default: creation time) */
+    sortBy?: Talkif.CallSortField;
+    /** Sort direction for `sortBy` (default: desc) */
+    sortDirection?: Talkif.SortDirection;
 }
