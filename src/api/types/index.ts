@@ -155,6 +155,7 @@ export * from "./MemberTagCatalogResponse.js";
 export * from "./MemberTagsResponse.js";
 export * from "./MemberTagUsage.js";
 export * from "./MemberWeeklyHours.js";
+export * from "./ModelDeprecation.js";
 export * from "./PaginatedResponse.js";
 export * from "./PaginationMeta.js";
 export * from "./PermissionsResponse.js";
