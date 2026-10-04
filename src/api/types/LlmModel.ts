@@ -10,6 +10,7 @@ export interface LlmModel {
     capabilities: Talkif.LlmCapabilities;
     /** Context window size (tokens) */
     contextWindow?: (number | null) | undefined;
+    deprecation?: (Talkif.ModelDeprecation | null) | undefined;
     /** Model description */
     description?: (string | null) | undefined;
     /** Model identifier (e.g., "gpt-4o", "claude-3-5-sonnet") */

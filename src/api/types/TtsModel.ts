@@ -8,6 +8,7 @@ import type * as Talkif from "../index.js";
 export interface TtsModel {
     /** Model capabilities */
     capabilities: Talkif.TtsCapabilities;
+    deprecation?: (Talkif.ModelDeprecation | null) | undefined;
     /** Model description */
     description?: (string | null) | undefined;
     /** Supported languages */
