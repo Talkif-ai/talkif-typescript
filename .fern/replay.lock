@@ -24,14 +24,20 @@ generations:
     cli_version: unknown
     generator_versions:
       fernapi/fern-typescript-sdk: 3.92.0
-current_generation: e41fb51bb22838888774bae5f02cf87d1349b77f
+  - commit_sha: 6863388c444c4208d6f2a579863acddf2ff437f8
+    tree_hash: 7363773d18a4fbb66861e63c6a89b4c9f8cc0cad
+    timestamp: 2026-10-04T01:39:56.677Z
+    cli_version: unknown
+    generator_versions:
+      fernapi/fern-typescript-sdk: 3.92.0
+current_generation: 6863388c444c4208d6f2a579863acddf2ff437f8
 patches:
   - id: patch-08317ffa
     content_hash: sha256:98f6663451d6db1014158f1bee13c9d41569dda6cd0ea031528409b3023316c2
     original_commit: 08317ffa4162b07df9487db1795cd10b7f8e16e7
     original_message: "ci: make release idempotent — skip publish when the version already exists on npm"
     original_author: bekirisgor <bekir@talkif.ai>
-    base_generation: e41fb51bb22838888774bae5f02cf87d1349b77f
+    base_generation: 6863388c444c4208d6f2a579863acddf2ff437f8
     files:
       - CLAUDE.md
     patch_content: |
